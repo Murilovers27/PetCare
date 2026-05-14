@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetCare - Sistema de Gerenciamento Veterinário</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐾 PetCare</h1>
+            <p>Sistema de Gerenciamento Veterinário</p>
+        </header>
+
+        <!-- Status da Aplicação -->
+        <div id="statusApp" class="status">
+            <span id="statusIndicator" class="status-dot"></span>
+            <span id="statusText">Verificando servidor...</span>
+        </div>
+
+        <main>
+            <!-- TAB NAVIGATION -->
+            <div class="tabs">
+                <button class="tab-btn active" onclick="mudarAba('tutores')">👤 Tutores</button>
+                <button class="tab-btn" onclick="mudarAba('veterinarios')">🏥 Veterinários</button>
+                <button class="tab-btn" onclick="mudarAba('animais')">🐶 Animais</button>
+                <button class="tab-btn" onclick="mudarAba('consultas')">📋 Consultas</button>
+                <button class="tab-btn" onclick="mudarAba('testes')">🧪 Testes</button>
+            </div>
+
+            <!-- ABA: TUTORES -->
+            <section id="tutores" class="tab-content active">
+                <h2>Cadastrar Tutor</h2>
+                <div class="form-group">
+                    <input id="tutorNome" type="text" placeholder="Nome do Tutor" class="input-field">
+                    <input id="tutorTelefone" type="tel" placeholder="Telefone" class="input-field">
+                    <button onclick="cadastrarTutor()" class="btn btn-primary">Cadastrar Tutor</button>
+                </div>
+
+                <h3>Lista de Tutores</h3>
+                <div id="listaTutores" class="lista-container">
+                    <p class="info">Clique em "Cadastrar Tutor" para adicionar um novo tutor</p>
+                </div>
+            </section>
+
+            <!-- ABA: VETERINÁRIOS -->
+            <section id="veterinarios" class="tab-content">
+                <h2>Cadastrar Veterinário</h2>
+                <div class="form-group">
+                    <input id="vetNome" type="text" placeholder="Nome do Veterinário" class="input-field">
+                    <input id="vetEspecialidade" type="text" placeholder="Especialidade (ex: Clínica Geral)" class="input-field">
+                    <button onclick="cadastrarVeterinario()" class="btn btn-primary">Cadastrar Veterinário</button>
+                </div>
+
+                <h3>Lista de Veterinários</h3>
+                <div id="listaVeterinarios" class="lista-container">
+                    <p class="info">Clique em "Cadastrar Veterinário" para adicionar um novo veterinário</p>
+                </div>
+            </section>
+
+            <!-- ABA: ANIMAIS -->
+            <section id="animais" class="tab-content">
+                <h2>Cadastrar Animal</h2>
+                <div class="form-group">
+                    <input id="animalNome" type="text" placeholder="Nome do Animal" class="input-field">
+                    <input id="animalEspecie" type="text" placeholder="Espécie (ex: Cão, Gato)" class="input-field">
+                    <input id="animalTutorId" type="number" placeholder="ID do Tutor" class="input-field">
+                    <button onclick="cadastrarAnimal()" class="btn btn-primary">Cadastrar Animal</button>
+                </div>
+
+                <h3>Buscar Animal por ID</h3>
+                <div class="form-group">
+                    <input id="buscaAnimalId" type="number" placeholder="ID do Animal" class="input-field">
+                    <button onclick="buscarAnimal()" class="btn btn-secondary">Buscar</button>
+                </div>
+
+                <div id="resultadoBusca" class="resultado-container"></div>
+
+                <h3>Últimos Animais Cadastrados</h3>
+                <div id="listaAnimais" class="lista-container">
+                    <p class="info">Clique em "Cadastrar Animal" para adicionar um novo animal</p>
+                </div>
+            </section>
+
+            <!-- ABA: CONSULTAS -->
+            <section id="consultas" class="tab-content">
+                <h2>Agendar Consulta</h2>
+                <div class="form-group">
+                    <input id="consultaAnimalId" type="number" placeholder="ID do Animal" class="input-field">
+                    <input id="consultaVetId" type="number" placeholder="ID do Veterinário" class="input-field">
+                    <input id="consultaData" type="datetime-local" class="input-field">
+                    <button onclick="agendarConsulta()" class="btn btn-primary">Agendar Consulta</button>
+                </div>
+
+                <h3>Histórico de Consultas</h3>
+                <div id="listaConsultas" class="lista-container">
+                    <p class="info">Clique em "Agendar Consulta" para criar uma nova consulta</p>
+                </div>
+            </section>
+
+            <!-- ABA: TESTES -->
+            <section id="testes" class="tab-content">
+                <h2>🧪 Testes Automatizados - Validação PARTE 2</h2>
+                <p class="info">Valide os cenários obrigatórios do sistema PetCare</p>
+
+                <div class="testes-grid">
+                    <!-- TESTE 1: Fluxo Completo -->
+                    <div class="teste-card">
+                        <h3>✅ Teste 1: Fluxo Completo</h3>
+                        <p>Cadastro de Tutor → Animal → Veterinário → Consulta</p>
+                        <button onclick="testeFluxoCompleto()" class="btn btn-primary">Executar</button>
+                        <div id="resultado-teste-1" class="resultado-teste"></div>
+                    </div>
+
+                    <!-- TESTE 2: Conflito de Agenda -->
+                    <div class="teste-card">
+                        <h3>⚠️ Teste 2: Conflito de Agenda</h3>
+                        <p>Impedir 2 consultas no mesmo horário para o mesmo vet</p>
+                        <button onclick="testeConflitorAgenda()" class="btn btn-primary">Executar</button>
+                        <div id="resultado-teste-2" class="resultado-teste"></div>
+                    </div>
+
+                    <!-- TESTE 3: Especialidade Incompatível -->
+                    <div class="teste-card">
+                        <h3>🔒 Teste 3: Especialidade Incompatível</h3>
+                        <p>Veterinário só atende sua especialidade</p>
+                        <button onclick="testeEspecialidade()" class="btn btn-primary">Executar</button>
+                        <div id="resultado-teste-3" class="resultado-teste"></div>
+                    </div>
+
+                    <!-- TESTE 4: Associação Tutor-Animal -->
+                    <div class="teste-card">
+                        <h3>🔗 Teste 4: Associação Tutor-Animal</h3>
+                        <p>Animal deve estar sempre vinculado a um tutor</p>
+                        <button onclick="testeAssociacaoTutor()" class="btn btn-primary">Executar</button>
+                        <div id="resultado-teste-4" class="resultado-teste"></div>
+                    </div>
+
+                    <!-- TESTE 5: Histórico Completo -->
+                    <div class="teste-card">
+                        <h3>📝 Teste 5: Histórico Completo</h3>
+                        <p>Prontuário registra todo histórico do animal</p>
+                        <button onclick="testeHistorico()" class="btn btn-primary">Executar</button>
+                        <div id="resultado-teste-5" class="resultado-teste"></div>
+                    </div>
+
+                    <!-- TESTE 6: Busca de Animal -->
+                    <div class="teste-card">
+                        <h3>🔍 Teste 6: Busca de Animal</h3>
+                        <p>Verificar se GET /animais/{id} funciona</p>
+                        <button onclick="testeBuscaAnimal()" class="btn btn-primary">Executar</button>
+                        <div id="resultado-teste-6" class="resultado-teste"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; padding: 20px; background: #f8fafc; border-radius: 8px;">
+                    <h3>📊 Resumo de Testes</h3>
+                    <p><strong>Total:</strong> <span id="total-testes">0</span></p>
+                    <p><strong>Passando:</strong> <span id="testes-passou" style="color: #10b981; font-weight: bold;">0</span></p>
+                    <p><strong>Falhando:</strong> <span id="testes-falhou" style="color: #ef4444; font-weight: bold;">0</span></p>
+                    <button onclick="executarTodosTestes()" class="btn btn-primary" style="margin-top: 15px;">Executar Todos os Testes</button>
+                </div>
+            </section>
+        </main>
+
+        <!-- LOG DE TESTES -->
+        <footer>
+            <h3>📊 Log de Requisições</h3>
+            <div id="logRequisicoes" class="log-container">
+                <p class="info">As requisições aparecerão aqui...</p>
+            </div>
+            <button onclick="limparLog()" class="btn btn-secondary">Limpar Log</button>
+        </footer>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8080";
+        let logRequisicoes = [];
+        let animaisCadastrados = [];
+        let tutoresCadastrados = [];
+        let veterinariosCadastrados = [];
+        let consultasCadastradas = [];
+
+        // Verificar status do servidor
+        window.addEventListener('load', () => {
+            verificarServidor();
+        });
+
+        function verificarServidor() {
+            fetch(API_URL + "/tutores", { method: "GET" })
+                .then(() => {
+                    atualizarStatus(true);
+                })
+                .catch(() => {
+                    atualizarStatus(false);
+                });
+        }
+
+        function atualizarStatus(online) {
+            const statusIndicator = document.getElementById("statusIndicator");
+            const statusText = document.getElementById("statusText");
+            if (online) {
+                statusIndicator.classList.add("online");
+                statusText.textContent = "✅ Servidor conectado";
+            } else {
+                statusIndicator.classList.remove("online");
+                statusText.textContent = "❌ Servidor desconectado";
+            }
+        }
+
+        function mudarAba(abaName) {
+            document.querySelectorAll(".tab-content").forEach(aba => {
+                aba.classList.remove("active");
+            });
+            document.querySelectorAll(".tab-btn").forEach(btn => {
+                btn.classList.remove("active");
+            });
+            document.getElementById(abaName).classList.add("active");
+            event.target.classList.add("active");
+        }
+
+        function registrarLog(metodo, endpoint, status, resposta) {
+            const timestamp = new Date().toLocaleTimeString("pt-BR");
+            const statusClass = status >= 200 && status < 300 ? "sucesso" : "erro";
+            
+            logRequisicoes.unshift({
+                timestamp,
+                metodo,
+                endpoint,
+                status,
+                statusClass,
+                resposta: typeof resposta === 'object' ? JSON.stringify(resposta) : resposta
+            });
+
+            if (logRequisicoes.length > 10) {
+                logRequisicoes.pop();
+            }
+
+            atualizarLogUI();
+        }
+
+        function atualizarLogUI() {
+            const logDiv = document.getElementById("logRequisicoes");
+            logDiv.innerHTML = logRequisicoes
+                .map(log => `
+                    <div class="log-entry">
+                        <span class="timestamp">${log.timestamp}</span>
+                        <span class="metodo">${log.metodo}</span>
+                        <span class="endpoint">${log.endpoint}</span>
+                        <span class="status ${log.statusClass}">${log.status}</span>
+                        <span class="resposta">${log.resposta}</span>
+                    </div>
+                `)
+                .join("");
+        }
+
+        function limparLog() {
+            logRequisicoes = [];
+            atualizarLogUI();
+        }
+
+        // ===== TUTORES =====
+        function cadastrarTutor() {
+            const nome = document.getElementById("tutorNome").value.trim();
+            const telefone = document.getElementById("tutorTelefone").value.trim();
+
+            if (!nome || !telefone) {
+                alert("⚠️ Preencha todos os campos!");
+                return;
+            }
+
+            fetch(API_URL + "/tutores", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nome, telefone })
+            })
+            .then(res => {
+                registrarLog("POST", "/tutores", res.status, `Tutor: ${nome}`);
+                if (!res.ok) throw new Error(`Erro ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                tutoresCadastrados.unshift(data);
+                alert(`✅ Tutor cadastrado com sucesso! ID: ${data.id}`);
+                document.getElementById("tutorNome").value = "";
+                document.getElementById("tutorTelefone").value = "";
+                atualizarListaTutores();
+            })
+            .catch(err => {
+                alert(`❌ Erro ao cadastrar tutor: ${err.message}`);
+            });
+        }
+
+        function atualizarListaTutores() {
+            const listDiv = document.getElementById("listaTutores");
+            if (tutoresCadastrados.length === 0) {
+                listDiv.innerHTML = '<p class="info">Nenhum tutor cadastrado</p>';
+                return;
+            }
+            listDiv.innerHTML = tutoresCadastrados
+                .map(tutor => `
+                    <div class="item">
+                        <strong>ID: ${tutor.id}</strong> | 
+                        Nome: ${tutor.nome} | 
+                        Tel: ${tutor.telefone}
+                    </div>
+                `)
+                .join("");
+        }
+
+        // ===== VETERINÁRIOS =====
+        function cadastrarVeterinario() {
+            const nome = document.getElementById("vetNome").value.trim();
+            const especialidade = document.getElementById("vetEspecialidade").value.trim();
+
+            if (!nome || !especialidade) {
+                alert("⚠️ Preencha todos os campos!");
+                return;
+            }
+
+            fetch(API_URL + "/veterinarios", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nome, especialidade })
+            })
+            .then(res => {
+                registrarLog("POST", "/veterinarios", res.status, `Vet: ${nome}`);
+                if (!res.ok) throw new Error(`Erro ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                veterinariosCadastrados.unshift(data);
+                alert(`✅ Veterinário cadastrado com sucesso! ID: ${data.id}`);
+                document.getElementById("vetNome").value = "";
+                document.getElementById("vetEspecialidade").value = "";
+                atualizarListaVeterinarios();
+            })
+            .catch(err => {
+                alert(`❌ Erro ao cadastrar veterinário: ${err.message}`);
+            });
+        }
+
+        function atualizarListaVeterinarios() {
+            const listDiv = document.getElementById("listaVeterinarios");
+            if (veterinariosCadastrados.length === 0) {
+                listDiv.innerHTML = '<p class="info">Nenhum veterinário cadastrado</p>';
+                return;
+            }
+            listDiv.innerHTML = veterinariosCadastrados
+                .map(vet => `
+                    <div class="item">
+                        <strong>ID: ${vet.id}</strong> | 
+                        Nome: ${vet.nome} | 
+                        Especialidade: ${vet.especialidade}
+                    </div>
+                `)
+                .join("");
+        }
+
+        // ===== ANIMAIS =====
+        function cadastrarAnimal() {
+            const nome = document.getElementById("animalNome").value.trim();
+            const especie = document.getElementById("animalEspecie").value.trim();
+            const tutorId = document.getElementById("animalTutorId").value;
+
+            if (!nome || !especie || !tutorId) {
+                alert("⚠️ Preencha todos os campos!");
+                return;
+            }
+
+            fetch(API_URL + "/animais", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nome,
+                    especie,
+                    tutor: { id: parseInt(tutorId) }
+                })
+            })
+            .then(res => {
+                registrarLog("POST", "/animais", res.status, `Animal: ${nome}`);
+                if (!res.ok) throw new Error(`Erro ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                animaisCadastrados.unshift(data);
+                alert(`✅ Animal cadastrado com sucesso! ID: ${data.id}`);
+                document.getElementById("animalNome").value = "";
+                document.getElementById("animalEspecie").value = "";
+                document.getElementById("animalTutorId").value = "";
+                atualizarListaAnimais();
+            })
+            .catch(err => {
+                alert(`❌ Erro ao cadastrar animal: ${err.message}`);
+            });
+        }
+
+        function buscarAnimal() {
+            const animalId = document.getElementById("buscaAnimalId").value;
+
+            if (!animalId) {
+                alert("⚠️ Digite um ID para buscar!");
+                return;
+            }
+
+            fetch(API_URL + `/animais/${animalId}`, {
+                method: "GET"
+            })
+            .then(res => {
+                registrarLog("GET", `/animais/${animalId}`, res.status, "Busca");
+                if (!res.ok) throw new Error(`Erro ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                const resultDiv = document.getElementById("resultadoBusca");
+                resultDiv.innerHTML = `
+                    <div class="item sucesso">
+                        <h4>✅ Animal Encontrado</h4>
+                        <p><strong>ID:</strong> ${data.id}</p>
+                        <p><strong>Nome:</strong> ${data.nome}</p>
+                        <p><strong>Espécie:</strong> ${data.especie}</p>
+                        <p><strong>Tutor ID:</strong> ${data.tutor?.id || "N/A"}</p>
+                    </div>
+                `;
+            })
+            .catch(err => {
+                document.getElementById("resultadoBusca").innerHTML = `
+                    <div class="item erro">
+                        <h4>❌ Animal não encontrado</h4>
+                        <p>${err.message}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function atualizarListaAnimais() {
+            const listDiv = document.getElementById("listaAnimais");
+            if (animaisCadastrados.length === 0) {
+                listDiv.innerHTML = '<p class="info">Nenhum animal cadastrado</p>';
+                return;
+            }
+            listDiv.innerHTML = animaisCadastrados
+                .map(animal => `
+                    <div class="item">
+                        <strong>ID: ${animal.id}</strong> | 
+                        Nome: ${animal.nome} | 
+                        Espécie: ${animal.especie} | 
+                        Tutor ID: ${animal.tutor?.id || "N/A"}
+                    </div>
+                `)
+                .join("");
+        }
+
+        // ===== CONSULTAS =====
+        function agendarConsulta() {
+            const animalId = document.getElementById("consultaAnimalId").value;
+            const vetId = document.getElementById("consultaVetId").value;
+            const data = document.getElementById("consultaData").value;
+
+            if (!animalId || !vetId || !data) {
+                alert("⚠️ Preencha todos os campos!");
+                return;
+            }
+
+            const dataFormatada = new Date(data).toISOString().replace('Z', '');
+
+            fetch(API_URL + "/consultas", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    data: dataFormatada,
+                    animal: { id: parseInt(animalId) },
+                    veterinario: { id: parseInt(vetId) }
+                })
+            })
+            .then(res => {
+                registrarLog("POST", "/consultas", res.status, `Consulta agendada`);
+                if (!res.ok) throw new Error(`Erro ${res.status}`);
+                return res.json();
+            })
+            .then(data => {
+                consultasCadastradas.unshift(data);
+                alert(`✅ Consulta agendada com sucesso! ID: ${data.id}`);
+                document.getElementById("consultaAnimalId").value = "";
+                document.getElementById("consultaVetId").value = "";
+                document.getElementById("consultaData").value = "";
+                atualizarListaConsultas();
+            })
+            .catch(err => {
+                alert(`❌ Erro ao agendar consulta: ${err.message}`);
+            });
+        }
+
+        function atualizarListaConsultas() {
+            const listDiv = document.getElementById("listaConsultas");
+            if (consultasCadastradas.length === 0) {
+                listDiv.innerHTML = '<p class="info">Nenhuma consulta agendada</p>';
+                return;
+            }
+            listDiv.innerHTML = consultasCadastradas
+                .map(consulta => `
+                    <div class="item">
+                        <strong>ID: ${consulta.id}</strong> | 
+                        Animal ID: ${consulta.animal?.id || "N/A"} | 
+                        Vet ID: ${consulta.veterinario?.id || "N/A"} | 
+                        Data: ${new Date(consulta.data).toLocaleString('pt-BR')}
+                    </div>
+                `)
+                .join("");
+        }
+
+        // ===== TESTES AUTOMATIZADOS =====
+        let testesResultados = {};
+
+        function mostrarResultado(testId, sucesso, mensagem) {
+            const elemento = document.getElementById(`resultado-teste-${testId}`);
+            const classe = sucesso ? "resultado-sucesso" : "resultado-erro";
+            const icone = sucesso ? "✅" : "❌";
+            
+            elemento.innerHTML = `
+                <div class="resultado-box ${classe}">
+                    ${icone} ${mensagem}
+                </div>
+            `;
+            
+            testesResultados[testId] = sucesso;
+            atualizarResumo();
+        }
+
+        function atualizarResumo() {
+            const total = Object.keys(testesResultados).length;
+            const passou = Object.values(testesResultados).filter(r => r === true).length;
+            const falhou = total - passou;
+            
+            document.getElementById("total-testes").textContent = total;
+            document.getElementById("testes-passou").textContent = passou;
+            document.getElementById("testes-falhou").textContent = falhou;
+        }
+
+        // TESTE 1: Fluxo Completo
+        async function testeFluxoCompleto() {
+            try {
+                // 1. Cadastrar Tutor
+                const resTutor = await fetch(API_URL + "/tutores", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Tutor Teste 1", 
+                        telefone: "11999999991" 
+                    })
+                });
+                const tutor = await resTutor.json();
+                if (!tutor.id) throw new Error("Falha ao criar tutor");
+
+                // 2. Cadastrar Veterinário
+                const resVet = await fetch(API_URL + "/veterinarios", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Dr. Teste", 
+                        especialidade: "Cão" 
+                    })
+                });
+                const vet = await resVet.json();
+                if (!vet.id) throw new Error("Falha ao criar veterinário");
+
+                // 3. Cadastrar Animal
+                const resAnimal = await fetch(API_URL + "/animais", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Rex Teste", 
+                        especie: "Cão",
+                        tutor: { id: tutor.id }
+                    })
+                });
+                const animal = await resAnimal.json();
+                if (!animal.id) throw new Error("Falha ao criar animal");
+
+                // 4. Agendar Consulta
+                const dataConsulta = new Date();
+                dataConsulta.setHours(dataConsulta.getHours() + 1);
+                
+                const resConsulta = await fetch(API_URL + "/consultas", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        data: dataConsulta.toISOString().replace('Z', ''),
+                        animal: { id: animal.id },
+                        veterinario: { id: vet.id }
+                    })
+                });
+                const consulta = await resConsulta.json();
+                if (!consulta.id) throw new Error("Falha ao agendar consulta");
+
+                mostrarResultado(1, true, `Fluxo completo OK: Tutor(${tutor.id}) → Animal(${animal.id}) → Vet(${vet.id}) → Consulta(${consulta.id})`);
+            } catch (err) {
+                mostrarResultado(1, false, `Erro: ${err.message}`);
+            }
+        }
+
+        // TESTE 2: Conflito de Agenda
+        async function testeConflitorAgenda() {
+            try {
+                // Preparar dados
+                const resVet = await fetch(API_URL + "/veterinarios", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome: "Dr. Conflito", especialidade: "Gato" })
+                });
+                const vet = await resVet.json();
+
+                const resTutor = await fetch(API_URL + "/tutores", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome: "Tutor Gato", telefone: "11988888882" })
+                });
+                const tutor = await resTutor.json();
+
+                const resAnimal = await fetch(API_URL + "/animais", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Miau", 
+                        especie: "Gato",
+                        tutor: { id: tutor.id }
+                    })
+                });
+                const animal = await resAnimal.json();
+
+                const dataConsulta = new Date();
+                dataConsulta.setHours(15, 30, 0);
+                const dataFormatada = dataConsulta.toISOString().replace('Z', '');
+
+                // 1ª Consulta - deve passar
+                const res1 = await fetch(API_URL + "/consultas", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        data: dataFormatada,
+                        animal: { id: animal.id },
+                        veterinario: { id: vet.id }
+                    })
+                });
+                const consulta1 = await res1.json();
+                if (!consulta1.id) throw new Error("Primeira consulta falhou");
+
+                // 2ª Consulta no mesmo horário - deve ser rejeitada
+                const res2 = await fetch(API_URL + "/consultas", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        data: dataFormatada,
+                        animal: { id: animal.id },
+                        veterinario: { id: vet.id }
+                    })
+                });
+
+                if (res2.status === 500 || !res2.ok) {
+                    // Esperado: erro de conflito
+                    mostrarResultado(2, true, `Conflito detectado corretamente! Status: ${res2.status}`);
+                } else {
+                    const consulta2 = await res2.json();
+                    if (consulta2.id) {
+                        mostrarResultado(2, false, "FALHA: Sistema permitiu 2 consultas no mesmo horário!");
+                    } else {
+                        mostrarResultado(2, true, "Conflito foi prevenido!");
+                    }
+                }
+            } catch (err) {
+                mostrarResultado(2, false, `Erro no teste: ${err.message}`);
+            }
+        }
+
+        // TESTE 3: Especialidade Incompatível
+        async function testeEspecialidade() {
+            try {
+                // Veterinário especialista em Gato
+                const resVet = await fetch(API_URL + "/veterinarios", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Dra. Felina", 
+                        especialidade: "Gato" 
+                    })
+                });
+                const vet = await resVet.json();
+
+                // Tutor e Animal Cachorro
+                const resTutor = await fetch(API_URL + "/tutores", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome: "Tutor Canino", telefone: "11987654321" })
+                });
+                const tutor = await resTutor.json();
+
+                const resAnimal = await fetch(API_URL + "/animais", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Doggo", 
+                        especie: "Cachorro",
+                        tutor: { id: tutor.id }
+                    })
+                });
+                const animal = await resAnimal.json();
+
+                // Tentar agendar Cachorro com Veterinário de Gato
+                const dataConsulta = new Date();
+                dataConsulta.setHours(14, 0, 0);
+
+                const resConsulta = await fetch(API_URL + "/consultas", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        data: dataConsulta.toISOString().replace('Z', ''),
+                        animal: { id: animal.id },
+                        veterinario: { id: vet.id }
+                    })
+                });
+
+                if (resConsulta.status === 500 || !resConsulta.ok) {
+                    mostrarResultado(3, true, `✅ Especialidade validada! Vet especializado em Gato não atende Cachorro`);
+                } else {
+                    const consulta = await resConsulta.json();
+                    if (consulta.id) {
+                        mostrarResultado(3, false, "FALHA: Sistema permitiu especialidade incompatível!");
+                    } else {
+                        mostrarResultado(3, true, "Validação de especialidade OK!");
+                    }
+                }
+            } catch (err) {
+                mostrarResultado(3, false, `Erro: ${err.message}`);
+            }
+        }
+
+        // TESTE 4: Associação Tutor-Animal
+        async function testeAssociacaoTutor() {
+            try {
+                // Criar Tutor
+                const resTutor = await fetch(API_URL + "/tutores", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "João Silva", 
+                        telefone: "11991234567" 
+                    })
+                });
+                const tutor = await resTutor.json();
+
+                // Criar Animal com esse Tutor
+                const resAnimal = await fetch(API_URL + "/animais", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Bolinha", 
+                        especie: "Cão",
+                        tutor: { id: tutor.id }
+                    })
+                });
+                const animal = await resAnimal.json();
+
+                // Buscar animal
+                const resBusca = await fetch(API_URL + `/animais/${animal.id}`, {
+                    method: "GET"
+                });
+                const animalBuscado = await resBusca.json();
+
+                if (animalBuscado.tutor && animalBuscado.tutor.id === tutor.id) {
+                    mostrarResultado(4, true, `✅ Associação OK: Animal ${animalBuscado.nome} vinculado a Tutor ${animalBuscado.tutor.nome}`);
+                } else {
+                    mostrarResultado(4, false, "FALHA: Associação Tutor-Animal não foi mantida");
+                }
+            } catch (err) {
+                mostrarResultado(4, false, `Erro: ${err.message}`);
+            }
+        }
+
+        // TESTE 5: Histórico Completo (Prontuário)
+        async function testeHistorico() {
+            try {
+                // Criar animal
+                const resTutor = await fetch(API_URL + "/tutores", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome: "Tutor Prontuário", telefone: "11955555555" })
+                });
+                const tutor = await resTutor.json();
+
+                const resAnimal = await fetch(API_URL + "/animais", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Lupita", 
+                        especie: "Gato",
+                        tutor: { id: tutor.id }
+                    })
+                });
+                const animal = await resAnimal.json();
+
+                // Criar prontuários
+                const prontuarios = [];
+                for (let i = 1; i <= 3; i++) {
+                    const resPront = await fetch(API_URL + "/prontuarios", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            descricao: `Atendimento ${i}: Vacinação e check-up`,
+                            data: new Date().toISOString().split('T')[0],
+                            animal: { id: animal.id }
+                        })
+                    });
+                    const pront = await resPront.json();
+                    prontuarios.push(pront);
+                }
+
+                // Buscar histórico
+                const resHistorico = await fetch(API_URL + `/prontuarios/animal/${animal.id}`, {
+                    method: "GET"
+                });
+                const historico = await resHistorico.json();
+
+                if (Array.isArray(historico) && historico.length >= 3) {
+                    mostrarResultado(5, true, `✅ Histórico completo: ${historico.length} registros para ${animal.nome}`);
+                } else {
+                    mostrarResultado(5, false, `Histórico incompleto: esperava 3, encontrou ${historico.length}`);
+                }
+            } catch (err) {
+                mostrarResultado(5, false, `Erro: ${err.message}`);
+            }
+        }
+
+        // TESTE 6: Busca de Animal
+        async function testeBuscaAnimal() {
+            try {
+                // Criar animal
+                const resTutor = await fetch(API_URL + "/tutores", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nome: "Tutor Busca", telefone: "11966666666" })
+                });
+                const tutor = await resTutor.json();
+
+                const resAnimal = await fetch(API_URL + "/animais", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        nome: "Findido", 
+                        especie: "Peixe",
+                        tutor: { id: tutor.id }
+                    })
+                });
+                const animal = await resAnimal.json();
+
+                // Buscar por ID
+                const resBusca = await fetch(API_URL + `/animais/${animal.id}`, {
+                    method: "GET"
+                });
+                const encontrado = await resBusca.json();
+
+                if (encontrado.id === animal.id && encontrado.nome === "Findido") {
+                    mostrarResultado(6, true, `✅ Busca funcionando: GET /animais/${animal.id} retornou ${encontrado.nome}`);
+                } else {
+                    mostrarResultado(6, false, "FALHA: Busca retornou dados incorretos");
+                }
+            } catch (err) {
+                mostrarResultado(6, false, `Erro: ${err.message}`);
+            }
+        }
+
+        // Executar todos os testes
+        async function executarTodosTestes() {
+            document.getElementById("resultado-teste-1").innerHTML = '<p style="color: #64748b;">Executando...</p>';
+            document.getElementById("resultado-teste-2").innerHTML = '<p style="color: #64748b;">Executando...</p>';
+            document.getElementById("resultado-teste-3").innerHTML = '<p style="color: #64748b;">Executando...</p>';
+            document.getElementById("resultado-teste-4").innerHTML = '<p style="color: #64748b;">Executando...</p>';
+            document.getElementById("resultado-teste-5").innerHTML = '<p style="color: #64748b;">Executando...</p>';
+            document.getElementById("resultado-teste-6").innerHTML = '<p style="color: #64748b;">Executando...</p>';
+
+            await testeFluxoCompleto();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testeConflitorAgenda();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testeEspecialidade();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testeAssociacaoTutor();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testeHistorico();
+            await new Promise(r => setTimeout(r, 500));
+            
+            await testeBuscaAnimal();
+        }
+    </script>
+</body>
+</html>
